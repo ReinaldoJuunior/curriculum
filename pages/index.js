@@ -21,31 +21,8 @@ const Index = ( {repos, user} ) => {
     )
 }
 export async function getServerSideProps(context) {
-    const resUser = await fetch('https://api.github.com/users/ReinaldoJuunior')
-    const user = await resUser.json()
-
-    const resRepos = await fetch('https://api.github.com/users/ReinaldoJuunior/repos?sort=updated')
-    const originalRepos = await resRepos.json()
-
-    const dontShowRepos = ['ReinaldoJuunior/link-in-bio']
-
-    const isNotFork = repo => !repo.fork
-    const dontShowFilter = repo => dontShowRepos.indexOf(repo.full_name) === -1
-
-    const extractData = repo => ({
-        id: repo.id,
-        full_name: repo.full_name,
-        language: repo.language,
-        stargazers_count: repo.stargazers_count,
-        description: repo.description
-
-    })
-
-    const repos = originalRepos
-                            .filter(isNotFork)
-                            .filter(dontShowFilter)
-                            .map(extractData)
-return {
+    const { repos, user } = await getUser("ReinaldoJuunior")
+    return {
         props: {
             currentData: new Date().toString(),
             repos,
